@@ -1,0 +1,37 @@
+git config --global credential.helper store
+git config --system --unset credential.helper
+
+git config -l
+git config --global user.name abc #用于commit时的身份认定
+git config --global user.email am@gh.cm #用于commit时的身份认定
+# git remote set-url origin "https://github.com/**/Metagenome"
+git config remote.origin.url "https://github.com/**/Metagenome"
+
+
+# Using 'master' as the name for the initial branch. 使用“master”作为初始分支的名称
+# This default branch name is subject to change. 初始分支名称是可以改变
+# To configure the initial branch name to use in all of your new repositories, which will suppress this warning, call:
+git config --global init.defaultBranch <name>
+# Names commonly chosen instead of 'master' are 'main', 'trunk' and 'development'.
+# The just-created branch can be renamed via this command:
+git branch -m <name>
+
+# git配制文件
+cat ~/.gitconfig
+cat ~/.git/config
+
+git --version
+git init
+git add test.txt
+git status
+git show-ref
+git commit -m "test11"
+git config pull.rebase false  # merge
+git pull git@github.com:ModelHello/Metagenome.git # 提交文件前先pull下拉远程仓库文件到本地
+git remote add metag https://github.com/**/Metagenome # 添加远程仓库，别名metag
+git push -u metag master # push上传文件至远程仓库的master分支
+
+
+
+
+
