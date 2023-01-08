@@ -1,0 +1,9 @@
+ssh-keygen -t rsa -b 2048 -C "abc@fox.com" -f "github"
+ssh-keygen -t ed25519 -C "abc@fox.com" -f "github"
+
+ssh-add ~/.ssh/id_rsa
+# 若提示“Could not open a connection to your authentication agent.”，使用如下命令，再次ssh-add ~/.ssh/id_rsa
+# ssh-agent bash
+
+ssh -T git@github.com
+
