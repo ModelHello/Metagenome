@@ -1,0 +1,33 @@
+# 构建ncbi-blast nt库
+# 下载ncbi-blast工具
+wget -c https://ftp.ncbi.nlm.nih.gov/blast/executables/LATEST/ncbi-blast-2.13.0+-x64-linux.tar.gz
+tar -zxvf ncbi-blast-2.13.0+-x64-linux.tar.gz
+# cd ./ncbi-blast-2.13.0+/bin/
+# 查看所有可供下载的blast数据库
+perl ./ncbi-blast-2.13.0+/bin/update_blastdb.pl --showall
+mkdir db_nt
+cd db_nt
+# 下载 nt 库，后台下载并自动解压，如果中途断网，重启下载支持断点续传，大约191G
+nohup perl ../ncbi-blast-2.13.0+/bin/update_blastdb.pl --decompress nt &> update.log & 
+# du -hd 1 ~/db_nt
+# ls -lh ~/db_nt
+
+# NCBI的分类数据库文件1：taxdump.tar.gz，文件大小57.34M
+wget -t 0 -c ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz
+# NCBI的分类数据库文件2：prot.accession2taxid.gz，文件大小7.43G，解压后大小40.5G
+wget -t 0 -c https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/accession2taxid/prot.accession2taxid.gz
+conda install -c bioconda csvtk -y
+conda install taxonkit -c bioconda -y
+
+# 创建taxdump目录
+mkdir taxdump
+# 解压taxdump.tar.gz到taxdump目录
+tar -zxvf taxdump.tar.gz -C taxdump
+# 解压prot.accession2taxid.gz到prot.accession2taxid文件
+gzip -dc prot.accession2taxid.gz > prot.accession2taxid
+
+# 使用TaxonKit提取特定taxons下的所有taxid(以病毒为例：病毒NCBI编号 txid:10239)
+taxonkit list -j 2 --ids 10239 --indent "" --data-dir ./taxdump/ > Virus.list
+
+# Virus.taxid.acc.txt文件有180MB
+cat prot.accession2taxid | csvtk -t grep -f taxid -P Virus.list | csvtk -t cut -f accession.version > Virus.taxid.acc.txt
